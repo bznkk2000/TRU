@@ -259,34 +259,49 @@ rsop.msc
 # Recommended Troubleshooting Flow
 
 ```mermaid
-flowchart TD
-
-A[User Report Lock Screen Not Working] --> B[Check GPO Applied]
-
-B --> C{gpresult}
-
-C -->|No GPO| D[Fix OU or Security Filtering]
-
-C -->|GPO Applied| E[Check Machine Inactivity Policy]
-
-E --> F{900 Seconds?}
-
-F -->|No| G[Fix GPO Configuration]
-
-F -->|Yes| H[Check Power Plan]
-
-H --> I{Display Timeout Correct?}
-
-I -->|No| J[Fix Power Policy]
-
-I -->|Yes| K[Check Screen Saver Policy]
-
-K --> L{Screen Saver Enabled?}
-
-L -->|No| M[Enable Screen Saver Lock]
-
-L -->|Yes| N[Investigate Baseline Conflict]
+flowchart LR
+    A[สร้าง GPO ใน GPMC] --> B["กำหนดค่าใน GPO (ADMX/Policies)"]
+    B --> C[Link GPO ไปยัง Site / Domain / OU]
+    C --> D{Inheritance?}
+    D -->|Block Inheritance| E[หยุดรับจากระดับบน]
+    D -->|ไม่บล็อก| F[รับ GPO จากระดับบนต่อไป]
+    E --> G[กำหนด Link Order & Enforced]
+    F --> G[กำหนด Link Order & Enforced]
+    G --> H["Security Filtering (ACL)"]
+    H --> I["WMI Filtering (เช็คเงื่อนไขเครื่อง)"]
+    I --> J[Client ดึงนโยบายระหว่าง Startup/Logon หรือ Background Refresh]
+    J --> K["Client-Side Extensions (CSE) ประมวลผลตามชนิดนโยบาย"]
+    K --> L["(Registry/Policy Store)"] 
+    L --> M["ผลลัพธ์สุดท้ายบนเครื่อง (RSOP)"]
 ```
+
+![image](https://hackmd.io/_uploads/BkPe04W9bl.png)
+
+
+---
+
+
+
+# Recommended Troubleshooting Flow
+
+```mermaid
+flowchart LR
+    A[สร้าง GPO ใน GPMC] --> B["กำหนดค่าใน GPO (ADMX/Policies)"]
+    B --> C[Link GPO ไปยัง Site / Domain / OU]
+    C --> D{Inheritance?}
+    D -->|Block Inheritance| E[หยุดรับจากระดับบน]
+    D -->|ไม่บล็อก| F[รับ GPO จากระดับบนต่อไป]
+    E --> G[กำหนด Link Order & Enforced]
+    F --> G[กำหนด Link Order & Enforced]
+    G --> H["Security Filtering (ACL)"]
+    H --> I["WMI Filtering (เช็คเงื่อนไขเครื่อง)"]
+    I --> J[Client ดึงนโยบายระหว่าง Startup/Logon หรือ Background Refresh]
+    J --> K["Client-Side Extensions (CSE) ประมวลผลตามชนิดนโยบาย"]
+    K --> L["(Registry/Policy Store)"] 
+    L --> M["ผลลัพธ์สุดท้ายบนเครื่อง (RSOP)"]
+```
+
+
 
 ---
 
@@ -322,8 +337,7 @@ Turn off display = 5 minutes
 
 - Baseline policy override
 - Power plan conflict
-- GPO precedence
-- ไม่มี Screen Saver Lock
+- ไม่มี Screen Saver Lock (แนะนำ)
 
 แนวทางแก้ไขคือ
 
@@ -331,3 +345,7 @@ Turn off display = 5 minutes
 2. ตรวจสอบ power plan ด้วย `powercfg`
 3. ตรวจสอบ registry policy
 4. เพิ่ม Screen Saver Lock เป็น fallback mechanism
+
+---
+
+
