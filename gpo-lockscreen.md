@@ -352,4 +352,30 @@ Turn off display = 5 minutes
 
 ---
 
+ปัญหาเพิ่มเติม 
+# 🔐 สรุปปัญหา & วิธีแก้ GPO: ห้าม User ปรับ Internet Options แต่ Admin ก็ถูกล็อก
+
+## 📌 ปัญหาคืออะไร?
+สาเหตุเกิดจากคุณตั้งนโยบายใน **Computer Configuration** ซึ่งบังคับใช้กับ **ทุกบัญชีบนเครื่อง**  
+ทำให้ไม่ว่าเป็น User หรือ Local Admin ก็ถูกล็อกเหมือนกัน  
+เมื่อ Internet Options ถูกบังคับโดย Computer GPO ค่าในหน้าต่างจะถูก **greyed‑out** และ Admin ก็แก้ไม่ได้
+
+---
+
+## ✅ วิธีแก้ให้ถูกต้อง (เพื่อให้ล็อกเฉพาะ User เท่านั้น)
+
+### ✔ 1) ย้าย Policy ไปใช้ **User Configuration**
+ตั้งค่าในเส้นทางนี้:
+User Configuration
+→ Administrative Templates
+→ Windows Components
+→ Internet Explorer
+→ Prevent changing proxy settings = Enabled
+
+### ✔ 2) ลิงก์ GPO เฉพาะ OU ที่มี “User”
+ไม่ต้องลิงก์กับ OU ของเครื่อง  
+→ จะล็อกเฉพาะ User ตามที่ต้องการ  
+→ Local Admin จะไม่ถูกนโยบายนี้บังคับ
+
+
 
