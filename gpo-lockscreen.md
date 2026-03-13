@@ -55,8 +55,8 @@ Policy หลักที่ใช้คือ
 | Policy | Value |
 |------|------|
 | Interactive logon: Machine inactivity limit | 900 seconds |
-| Turn off display (AC) | 5 minutes |
-| Turn off display (DC) | 5 minutes |
+| Turn off display (AC) | 20 minutes |
+| Turn off display (DC) | 20 minutes |
 
 ---
 
