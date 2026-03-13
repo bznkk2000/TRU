@@ -275,7 +275,6 @@ flowchart LR
     L --> M["ผลลัพธ์สุดท้ายบนเครื่อง (RSOP)"]
 ```
 
-![image](https://hackmd.io/_uploads/BkPe04W9bl.png)
 
 
 ---
@@ -285,8 +284,7 @@ flowchart LR
 # Recommended Troubleshooting Flow
 
 ```mermaid
-flowchart LR
-  sequenceDiagram
+sequenceDiagram
     autonumber
     participant CL as Client
     participant AD as Active Directory
