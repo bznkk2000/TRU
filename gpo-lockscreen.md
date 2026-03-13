@@ -286,19 +286,25 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[สร้าง GPO ใน GPMC] --> B["กำหนดค่าใน GPO (ADMX/Policies)"]
-    B --> C[Link GPO ไปยัง Site / Domain / OU]
-    C --> D{Inheritance?}
-    D -->|Block Inheritance| E[หยุดรับจากระดับบน]
-    D -->|ไม่บล็อก| F[รับ GPO จากระดับบนต่อไป]
-    E --> G[กำหนด Link Order & Enforced]
-    F --> G[กำหนด Link Order & Enforced]
-    G --> H["Security Filtering (ACL)"]
-    H --> I["WMI Filtering (เช็คเงื่อนไขเครื่อง)"]
-    I --> J[Client ดึงนโยบายระหว่าง Startup/Logon หรือ Background Refresh]
-    J --> K["Client-Side Extensions (CSE) ประมวลผลตามชนิดนโยบาย"]
-    K --> L["(Registry/Policy Store)"] 
-    L --> M["ผลลัพธ์สุดท้ายบนเครื่อง (RSOP)"]
+  sequenceDiagram
+    autonumber
+    participant CL as Client
+    participant AD as Active Directory
+    participant GP as Group Policy Objects
+
+    Note over CL: เริ่ม Startup (Computer) หรือ Logon (User)
+    CL->>AD: ค้นหา Site/Domain/OU ที่ตนเองอยู่
+    AD-->>CL: ส่งรายการ GPO ที่ "Link" กับแต่ละระดับ
+    Note over CL: ใช้ลำดับ LSDOU (Local→Site→Domain→OU ลึกสุด)
+    CL->>GP: จัดเรียงด้วย Link Order ในแต่ละระดับ
+    GP-->>CL: Enforced (No Override) มีสิทธิเหนือกว่าค่าใต้ลงมา
+    CL->>GP: ตรวจ Security Filtering (ACL: Authenticated Users/Groups)
+    GP-->>CL: ตรวจ WMI Filter (ผ่าน/ไม่ผ่านตามเงื่อนไข)
+    Note over CL: เฉพาะ GPO ที่ผ่านทั้ง Security + WMI เท่านั้น
+    CL->>GP: เรียก Client-Side Extensions (e.g., Registry, Scripts, Security, Folder Redirection, Power Mgmt)
+    GP-->>CL: เขียนค่าลง Registry/Policy Store
+    CL->>CL: รวมผลเป็น RSOP (Winning Policy)
+    Note over CL: Background refresh ทุก ~90 นาที + offset แบบสุ่ม<br/>หรือสั่ง gpupdate /force เพื่อเร่งกระบวนการ
 ```
 
 
