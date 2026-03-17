@@ -1,2 +1,5 @@
 ตรวจสอบเวลา บนเครื่อง Client ตรงกับ AD Server หรือไม่
-ตรวจสอบ Windows 11 ของเครื่อง เป็น Version อะไร
+ตรวจสอบ Windows 11 ของเครื่อง เป็น Version อะไร 11h2
+user ที่ login เข้า windows ว่าเป็น users อะไร เพราะ local admin จะไม่ไช้งาน GPO , ถ้า user domain,admin domain จะไช้งาน GPO และ 
+run cmd (as admin) >  rsop 
+run cmd (as admin) > gpresult /h C:\Temp\LocalGPO.html
